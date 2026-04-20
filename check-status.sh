@@ -1,8 +1,20 @@
 #!/bin/bash
 
 CONTAINER="mongo_container"
-MONGO_USER="admin"
-MONGO_PWD="ynovpwd"
+
+if [ -f "$(dirname "$0")/.env" ]; then
+  source "$(dirname "$0")/.env"
+fi
+
+MONGO_USER="${MONGO_INITDB_ROOT_USERNAME}"
+MONGO_PWD="${MONGO_INITDB_ROOT_PASSWORD}"
+
+if [ -z "$MONGO_USER" ] || [ -z "$MONGO_PWD" ]; then
+  echo "[ERREUR] Variables MONGO_INITDB_ROOT_USERNAME et MONGO_INITDB_ROOT_PASSWORD manquantes."
+  echo "         Copier .env.example vers .env et renseigner les valeurs."
+  exit 1
+fi
+
 ERRORS=()
 
 echo "=== Health Check : $CONTAINER ==="
